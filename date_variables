@@ -55,3 +55,18 @@ data breast;
   Histology_behavior contains "DCIS";
 run;
 
+data breast2;
+  set breast;
+  if Histology_behavior contains "Lobular" | 
+  Histology_behavior contains "lobular" | 
+  Histology_behavior contains "LOBULAR" |
+  Histology_behavior contains "LCIS"
+  then do; type="Lobular";
+  end;
+  else if Histology_behavior contains "Ductal" | 
+  Histology_behavior contains "ductal" | 
+  Histology_behavior contains "DUCTAL" |
+  Histology_behavior contains "DCIS"
+  then do; type="Ductal";
+run;
+
