@@ -27,7 +27,7 @@ run;
 data data;
   set data;
 if (cvd_score=1) and ((baseline_date < cvd_score_datepart < last_date) 
-  or (baseline_daate < cvd_score_datepart < death_datepart)
+  or (baseline_date < cvd_score_datepart < death_datepart)
   then do; censor=0
   date_censor=cvd_score_datepart;
 end;
@@ -45,5 +45,14 @@ run;
 
 data breast;
   set data;
-  where Histology_behavior contains "Lobular" | "lobular" | "LOBULAR" | "Ductal" | "ductal" | "DUCTAL" | "LCIS" | "DCIS";
+  where Histology_behavior contains "Lobular" | 
+  Histology_behavior contains "lobular" | 
+  Histology_behavior contains "LOBULAR" | 
+  Histology_behavior contains "Ductal" | 
+  Histology_behavior contains "ductal" | 
+  Histology_behavior contains "DUCTAL" | 
+  Histology_behavior contains "LCIS" | 
+  Histology_behavior contains "DCIS";
 run;
+
+data 
