@@ -43,6 +43,7 @@ end;
 days_of_event=date_censor-baseline_date;
 run;
 
+## Subsets to lobular and ductal molecular subtypes.
 data breast;
   set data;
   where Histology_behavior contains "Lobular" | 
@@ -55,6 +56,7 @@ data breast;
   Histology_behavior contains "DCIS";
 run;
 
+## Creates a type variable to indicate molecular subtype.
 data breast2;
   set breast;
   if Histology_behavior contains "Lobular" | 
@@ -70,3 +72,12 @@ data breast2;
   then do; type="Ductal";
 run;
 
+proc univariate data=breast2;
+  by type;
+  var Age_at_first_cancer_dx BMI_baseline Baseline_cholesterol Baseline_HDL Baseline_LDL;
+run;
+
+proc freq data=breast2;
+  by type;
+  table gender race smoking_status alcohol_use Stage cvd_score;
+ run;
