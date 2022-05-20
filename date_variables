@@ -1,0 +1,43 @@
+## Carviovascular disease variable:
+data data;
+  set cepi_2022;
+  cvd_score=.;
+    if CAD_cat=0 or MI_cat=0 or HF_cat=0 then cvd_score=0;
+    if CAD_cat=1 or MI_cat=1 or HF_cat=1 then cvd_score=1;
+run;
+
+data data;
+  set data;
+  last=most_recent_follow_up;
+  format last ANYDTDTM40.;
+  last_date=datepart(last);
+  format last_date date9.;
+  baseline_date=datepart(baseline_visit_dts);
+  format baseline_visit_dts_dp date9.;
+  format cvd_score_date datetime16.;
+  informat cvd_scoreOdate ANYDTDTM40.;
+    if cvd_score=1 then cvd_score_daate=min(HF_dx_dts, CAD, MI);
+  cvd_score_datepart=datepart(cvd_score_date);
+  format cvd_score_datepart date9.;
+  death_datepart=datepart(death_date);
+  format death_datepart date9.;
+run;
+
+data data;
+  set data;
+if (cvd_score=1) and ((baseline_date < cvd_score_datepart < last_date) 
+  or (baseline_daate < cvd_score_datepart < death_datepart)
+  then do; censor=0
+  date_censor=cvd_score_datepart;
+end;
+  else if (death_cat=1) and (baseline_date < death_datepart)
+  then do; censor=1;
+  date_censor=death_datepart;
+end;
+else if (death_cat ^=1) or (death_datepart > last_date)
+  then do;
+  censor=2;
+  date_censor=last_date;
+end;
+days_of_event=date_censor-baseline_date;
+run;
