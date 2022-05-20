@@ -6,6 +6,7 @@ data data;
     if CAD_cat=1 or MI_cat=1 or HF_cat=1 then cvd_score=1;
 run;
 
+## Creates time variable:
 data data;
   set data;
   last=most_recent_follow_up;
@@ -40,4 +41,9 @@ else if (death_cat ^=1) or (death_datepart > last_date)
   date_censor=last_date;
 end;
 days_of_event=date_censor-baseline_date;
+run;
+
+data breast;
+  set data;
+  where Histology_behavior contains "Lobular" | "lobular" | "LOBULAR" | "Ductal" | "ductal" | "DUCTAL" | "LCIS" | "DCIS";
 run;
